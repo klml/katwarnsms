@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" manifest="geo2share.manifest">
+<head>
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, user-scalable=0"/>
+    <title>katwarn per SMS/mail</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <style>
+body { font:normal 12px Arial, Helvetica; background: repeat-x top left #F6F6F6 ;margin: 0; padding: 0; outline: none;line-height:1.6; margin:5px auto;padding:0 10px;max-width:650px;}
+a { text-decoration: none; color: #e75012; }
+a:hover { text-decoration: underline; }
+a:active { color: #2E6465; }
+hr {color:#000;background-color:#000;height:1px;margin: 0 0 2px 0;}
+input, textarea { width: 350px; }
+select { width: 356px; }
+label,
+input,
+#qrcode { display:block;}
+#smslink { margin: 10px 0;}
+    </style>
+</head>
+<body onload="getLocation()" >
+
+    <h1><a href="//katwarn.de">Katwarn</a> per SMS/email bekommen</h1>
+    <p>Anstatt die <a href="//www.katwarn.de/anmeldung-app.php">Katwarn per APP</a> bekommt man Katwarnmeldungen auch per <a href="//www.katwarn.de/anmeldung-mail-sms.php">SMS und/oder mail</a>. Dazu in das Formular PLZ und optional eMailadresse eingeben und den QR Code scannen und/oder SMS an katwarn schicken.</p>
+    <label for="zip">Postleitzahl</label>
+    <input id="zip" name="zip" type="zip" required="true" value="hier PLZ eintragen" />
+    <br />
+    <label for="email">email (optional)</label>
+    <input id="email" name="email" type="email" />
+    <p>Auf dem mobiltelefon direkt <a href="#" id="smslink" >SMS an katwarn senden</a></p>
+    <p>Oder Code vom Bildschirm abscannen:</p>
+    <div id="qrcodeplace" ></div>
+    <hr />
+    <p>Hat den Vorteil keine zusätzliche APP auf dem Telefon installieren zu müssen, auserdem ist de SMS Versand vermutlich stablier als eine APP mit Webservice.<br />
+    Allerdings hat die App den Vorteil, dass man nicht nur für das Gebiet einer Postleitzahl, sondern auch für den aktuellen Standort gewarnt wird.</p>
+    <p>Dieses Formular nutzt <a href="//nominatim.openstreetmap.org">nominatim.openstreetmap.org</a> zur Abfrage der Postleitzahl.</p>
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/master/qrcode.min.js"></script>
+<script>
+
+var zip     = document.getElementById("zip");
+var email   = document.getElementById("email");
+var qrcodeplace  = document.getElementById("qrcodeplace");
+var smslink = document.getElementById("smslink");
+var accuracy = "" ;
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(createLinks);
+    } else {
+        alert( "Geolocation is not supported by this browser." );
+    }
+    return ;
+}
+function createLinks(position) {
+    reverseurl = '//nominatim.openstreetmap.org/reverse?format=json&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude ;
+    accuracy = Math.round( position.coords.accuracy ) ;
+    getZip();
+}
+
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
+
+function getZip() {
+    zip.value = "PLZ wird abgefragt" ;
+    //~ getLocation(); // if device has moved
+    getJSON( reverseurl ).then(function(data) {
+         zip.value = data.address.postcode ;
+         getQRandLink();
+    }, function(status) { 
+        alert( status ) ; // TODO
+    });
+
+}
+
+function getQRandLink () {
+    var qrurl  = 'SMSTO:+491637558842:KATWARN ' + zip.value + ' ' + email.value ;
+    var smsurl = 'sms:+491637558842?body=KATWARN%20' + zip.value + '%20' + email.value ;
+
+    // clear existing codes
+    while ( qrcodeplace.firstChild ) {
+        qrcodeplace.removeChild( qrcodeplace.firstChild );
+    }
+
+    var qrcode = new QRCode( qrcodeplace , {
+        text: qrurl ,
+        width: 300,
+        height: 300,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    smslink.setAttribute('href', smsurl );
+
+//~ iphone
+//~ sms:/* phone number here */&body=/* body text here */">Link</a>
+
+}
+
+zip.addEventListener("keyup", getQRandLink); 
+email.addEventListener("keyup", getQRandLink); 
+</script>
+</body>
+</html>
