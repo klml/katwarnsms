@@ -49,11 +49,15 @@ var accuracy = "" ;
 
 function getLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(createLinks);
+        navigator.geolocation.getCurrentPosition( createLinks,locationError,{timeout:50000} );
     } else {
         alert( "Geolocation is not supported by this browser." );
     }
     return ;
+}
+function locationError() {
+    console.log('got no geolocation, I try again...');
+    getLocation();
 }
 function createLinks(position) {
     reverseurl = '//nominatim.openstreetmap.org/reverse?format=json&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude ;
