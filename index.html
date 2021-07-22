@@ -23,8 +23,8 @@ input,
 </head>
 <body onload="getLocation()" >
 
-    <h1><a href="//katwarn.de">Katwarn</a> per SMS/email bekommen</h1>
-    <p>Anstatt die <a href="//www.katwarn.de/anmeldung-app.php">Katwarn per APP</a> bekommt man Katwarnmeldungen auch per <a href="//www.katwarn.de/anmeldung-mail-sms.php">SMS und/oder mail</a>. Dazu in das Formular PLZ und optional eMailadresse eingeben und den QR Code scannen und/oder SMS an katwarn schicken.</p>
+    <h1><a href="https://katwarn.de">Katwarn</a> per SMS/email bekommen</h1>
+    <p>Anstatt die <a href="https://www.katwarn.de/anmeldung-app.php">Katwarn per APP</a> bekommt man Katwarnmeldungen auch per <a href="https://www.katwarn.de/anmeldung-mail-sms.php">SMS und/oder mail</a>. Dazu in das Formular PLZ und optional eMailadresse eingeben und den QR Code scannen und/oder SMS an katwarn schicken.</p>
     <label for="zip">Postleitzahl</label>
     <input id="zip" name="zip" type="zip" required="true" placeholder="hier PLZ eintragen" />
     <br />
@@ -38,9 +38,10 @@ input,
     </p>
     <img src="status_abfrage_qrcode.png" />
     <hr />
-    <p>Katwarn per SMS/email den Vorteil keine zusätzliche APP auf dem Telefon installieren zu müssen, auserdem ist de SMS Versand vermutlich stablier als eine APP mit Webservice.<br />
+    <p>Katwarn per SMS/email bietet den Vorteil keine zusätzliche strom- und speicherplatzhungrige APP auf dem Telefon installieren zu müssen, auserdem ist de SMS Versand vermutlich stabiler als eine App mit Webservice der erst mal Internet braucht.<br />
     Allerdings hat die App den Vorteil, dass man nicht nur für das Gebiet einer Postleitzahl, sondern auch für den aktuellen Standort gewarnt wird.</p>
-    <p>Dieses Formular nutzt <a href="//nominatim.openstreetmap.org">nominatim.openstreetmap.org</a> zur Abfrage der Postleitzahl.</p>
+    <p>Dieses Formular nutzt <a href="https://nominatim.openstreetmap.org">nominatim.openstreetmap.org</a> zur Abfrage der Postleitzahl.</p>
+    <p><a href="https://github.com/klml/katwarnsms">https://github.com/klml/katwarnsms</a></p>
 
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
 <script>
@@ -64,7 +65,7 @@ function locationError() {
     getLocation();
 }
 function createLinks(position) {
-    reverseurl = '//nominatim.openstreetmap.org/reverse?format=json&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude ;
+    reverseurl = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude ;
     accuracy = Math.round( position.coords.accuracy ) ;
     getZip();
 }
